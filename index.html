@@ -5,11 +5,170 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Community Computer Center — Repair & Fundamentals of Computing</title>
   <meta name="description" content="Fast, reliable computer repair and fundamentals of computing education for the community." />
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root{
+      /* Color system: 5 colors total */
+      --primary: #2563eb;   /* brand blue */
+      --accent:  #10b981;   /* accent green */
+      --bg:      #ffffff;   /* white */
+      --muted:   #f1f5f9;   /* light gray (cards/stripes) */
+      --fg:      #0f172a;   /* dark text */
+      /* Layout tokens */
+      --radius: 14px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+      --maxw: 1100px;
+      --space-1: 8px;
+      --space-2: 12px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 32px;
+      --space-6: 48px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      line-height:1.6;
+      color:var(--fg);
+      background:var(--bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .container{ width:100%; max-width: var(--maxw); margin-inline:auto; padding: 0 var(--space-3); }
+    header{
+      position:sticky; top:0; z-index:10;
+      background: var(--bg);
+      border-bottom: 1px solid var(--muted);
+      backdrop-filter: saturate(180%) blur(6px);
+    }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap: var(--space-3); padding: var(--space-3) 0;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px; }
+    .brand-mark{
+      width:36px; height:36px; border-radius:10px; background:var(--primary);
+      display:grid; place-items:center; color:#fff; font-weight:700; box-shadow: var(--shadow-sm);
+    }
+    nav a{ color:var(--fg); text-decoration:none; font-weight:600; }
+    .cta-group{ display:flex; align-items:center; gap: var(--space-3); flex-wrap:wrap; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      height:44px; padding:0 16px; border-radius:10px; border:1px solid var(--muted);
+      background: var(--bg); color: var(--fg); text-decoration:none; font-weight:600;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-primary{
+      background: var(--primary); color:#fff; border-color: transparent;
+    }
+    .btn-accent{
+      background: var(--accent); color:#072013; border-color: transparent;
+    }
+
+    /* Language Switch (CSS only) */
+    .lang-switch{
+      display:inline-flex; border:1px solid var(--muted); border-radius:999px; padding:4px;
+      background: var(--muted);
+      gap:4px;
+    }
+    .lang-switch input{ position:absolute; opacity:0; pointer-events:none; }
+    .lang-switch label{
+      min-width:84px; text-align:center; padding:8px 12px; border-radius:999px; cursor:pointer;
+      font-weight:600; color:var(--fg);
+    }
+    /* Selected styles using :has() for modern browsers, plus fallback via sibling relations */
+    .lang-wrap {
+      display:flex; align-items:center; gap: var(--space-2);
+    }
+    #lang-en:checked ~ header .lang-switch label[for="lang-en"],
+    .lang-switch:has(#lang-en:checked) label[for="lang-en"]{
+      background: #fff; color: var(--primary); box-shadow: var(--shadow-sm);
+    }
+    #lang-hi:checked ~ header .lang-switch label[for="lang-hi"],
+    .lang-switch:has(#lang-hi:checked) label[for="lang-hi"]{
+      background: #fff; color: var(--primary); box-shadow: var(--shadow-sm);
+    }
+
+    main { display:block; }
+    [data-lang]{ display:none; }
+    #lang-en:checked ~ main [data-lang="en"]{ display:block; }
+    #lang-hi:checked ~ main [data-lang="hi"]{ display:block; }
+
+    /* Hero */
+    .hero{ padding: var(--space-6) 0; }
+    .hero-inner{ display:grid; gap: var(--space-5); align-items:center; }
+    .hero-text h1{ font-size: clamp(28px, 4vw, 44px); line-height:1.2; margin:0 0 12px; letter-spacing: -0.02em; }
+    .hero-text p{ margin:0 0 var(--space-4); max-width: 60ch; }
+    .hero-cta{ display:flex; gap: var(--space-3); flex-wrap:wrap; }
+    .hero-img{
+      width:100%; border-radius: var(--radius); background: var(--muted);
+      overflow:hidden; box-shadow: var(--shadow-md);
+    }
+    .hero-img img{ display:block; width:100%; height:auto; }
+
+    /* Sections */
+    section{ padding: var(--space-6) 0; }
+    .section-title{ font-size: clamp(22px, 2.6vw, 32px); margin:0 0 var(--space-3); }
+    .kicker{ display:inline-block; font-weight:700; color: var(--primary); margin-bottom: 8px; letter-spacing:.4px; }
+
+    /* Grids */
+    .grid{ display:grid; gap: var(--space-4); }
+    .grid-2{ grid-template-columns: 1fr; }
+    .grid-3{ grid-template-columns: 1fr; }
+    @media (min-width: 760px){
+      .hero-inner{ grid-template-columns: 1.1fr .9fr; }
+      .grid-2{ grid-template-columns: 1fr 1fr; }
+      .grid-3{ grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .card{
+      background: #fff; border: 1px solid var(--muted); border-radius: var(--radius);
+      padding: var(--space-4); box-shadow: var(--shadow-sm);
+      display:flex; flex-direction:column; gap: var(--space-3);
+    }
+    .card img{ width:100%; height:auto; border-radius:12px; }
+    .card h3{ margin:0; font-size: 18px; }
+    .card p{ margin:0; }
+
+    .price-badge{
+      display:inline-flex; align-items:center; gap:8px;
+      background: var(--accent); color:#072013;
+      border-radius:999px; padding: 6px 12px; font-weight:700; box-shadow: var(--shadow-sm);
+    }
+
+    /* Testimonials */
+    .avatar{
+      width:40px; height:40px; border-radius:999px; background: var(--muted);
+      overflow:hidden; flex: 0 0 auto;
+    }
+    .testimonial{
+      display:flex; gap: var(--space-3); align-items:flex-start;
+    }
+    .testimonial p{ margin:0; }
+
+    /* Footer */
+    footer{
+      border-top: 1px solid var(--muted);
+      background: var(--bg);
+      padding: var(--space-5) 0;
+    }
+    .foot-grid{ display:grid; gap: var(--space-4); }
+    @media (min-width: 760px){ .foot-grid{ grid-template-columns: 2fr 1fr 1fr; } }
+    .small{ font-size: 14px; opacity:.9; }
+
+    /* Utilities */
+    .stack-2 > * + *{ margin-top: var(--space-2); }
+    .stack-3 > * + *{ margin-top: var(--space-3); }
+    .center{ text-align:center; }
+    .pill{ display:inline-flex; align-items:center; gap:8px; background: var(--muted); color: var(--fg); border-radius:999px; padding:6px 12px; font-weight:600; }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  </style>
 </head>
 <body>
 
-  <!-- CSS-only language toggles -->
+   CSS-only language toggles 
   <input type="radio" name="language" id="lang-en" checked hidden />
   <input type="radio" name="language" id="lang-hi" hidden />
 
@@ -34,19 +193,200 @@
   </header>
 
   <main>
-    <!-- English Content -->
+     English Content 
     <div data-lang="en" id="lang-en">
-      <!-- HERO SECTION -->
-      <!-- SERVICES SECTION -->
-      <!-- COURSES SECTION -->
-      <!-- TESTIMONIAL + VISIT SECTION -->
-      <!-- All your current English HTML content goes here, unchanged -->
-      <!-- Copy from your original file and paste here -->
+      <section class="hero">
+        <div class="container hero-inner">
+          <div class="hero-text">
+            <span class="kicker">Fast repair • Friendly training</span>
+            <h1 class="text-balance">Computer repair and fundamentals of computing for everyone</h1>
+            <p>Same-day fixes for laptops and desktops, plus beginner-friendly classes in Computing 101, Office Productivity, and Internet Safety.</p>
+            <div class="hero-cta">
+              <a class="btn btn-primary" href="tel:+919999999999" aria-label="Call to book now">Book a repair</a>
+              <a class="btn" href="#courses">View classes</a>
+            </div>
+          </div>
+          <div class="hero-img" aria-hidden="true">
+            <img src="/placeholder.svg?height=520&width=760" alt="Technician repairing a laptop at the service desk" />
+          </div>
+        </div>
+      </section>
+
+      <section id="services">
+        <div class="container">
+          <h2 class="section-title">Repair services</h2>
+          <div class="grid grid-3">
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="Laptop hardware repair" />
+              <h3>Hardware repair</h3>
+              <p>Screen, keyboard, battery, RAM, SSD upgrades, and diagnostics.</p>
+              <span class="price-badge">From ₹799</span>
+            </article>
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="Virus removal and tune-up" />
+              <h3>Virus removal</h3>
+              <p>Clean malware, boost performance, and set up essential protections.</p>
+              <span class="price-badge">From ₹499</span>
+            </article>
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="Data recovery service" />
+              <h3>Data recovery</h3>
+              <p>Recover files from failing drives and set up reliable backups.</p>
+              <span class="price-badge">From ₹999</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="courses">
+        <div class="container">
+          <span class="kicker">Learn at your pace</span>
+          <h2 class="section-title">Fundamentals of Computing</h2>
+          <div class="grid grid-3">
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="Computer basics class for beginners" />
+              <h3>Computing 101</h3>
+              <p>Start from zero: essentials of using a computer, files, and settings.</p>
+              <span class="pill">4 weeks • Weekend</span>
+            </article>
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="Office productivity training" />
+              <h3>Office Productivity</h3>
+              <p>Docs, spreadsheets, and presentations with time-saving tips.</p>
+              <span class="pill">6 weeks • Evening</span>
+            </article>
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="Internet safety class" />
+              <h3>Internet Safety</h3>
+              <p>Stay safe online: passwords, scams, privacy, and backups.</p>
+              <span class="pill">3 weeks • Afternoon</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container grid grid-2">
+          <div class="card">
+            <h3>What our community says</h3>
+            <div class="testimonial">
+              <div class="avatar"><img src="/placeholder.svg?height=80&width=80" alt="Customer portrait" /></div>
+              <p>“Quick service and clear advice. My laptop is like new!”</p>
+            </div>
+            <div class="testimonial">
+              <div class="avatar"><img src="/placeholder.svg?height=80&width=80" alt="Student portrait" /></div>
+              <p>“The classes are beginner-friendly and practical. Highly recommended.”</p>
+            </div>
+          </div>
+          <div class="card stack-2">
+            <h3>Visit or call</h3>
+            <p><strong>Hours:</strong> Mon–Sat, 10:00–19:00</p>
+            <p><strong>Address:</strong> 12 Market Road, Near Metro Gate, Your City</p>
+            <div class="cta-group">
+              <a class="btn btn-primary" href="tel:+919999999999">Call: +91 99999 99999</a>
+              <a class="btn btn-accent" href="https://wa.me/919999999999?text=Hello%20I%27d%20like%20to%20book%20a%20repair%20or%20class">WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <!-- Hindi Content -->
+     Hindi Content 
     <div data-lang="hi" id="lang-hi" lang="hi">
-      <!-- Same as above, paste all the Hindi HTML content here from original -->
+      <section class="hero">
+        <div class="container hero-inner">
+          <div class="hero-text">
+            <span class="kicker">तेज़ मरम्मत • दोस्ताना प्रशिक्षण</span>
+            <h1 class="text-balance">कंप्यूटर मरम्मत और कंप्यूटिंग की बुनियादी शिक्षा</h1>
+            <p>लैपटॉप/डेस्कटॉप की उसी दिन मरम्मत, और शुरुआती के लिए Computing 101, Office Productivity तथा Internet Safety कक्षाएँ।</p>
+            <div class="hero-cta">
+              <a class="btn btn-primary" href="tel:+919999999999" aria-label="अभी कॉल करें">मरम्मत बुक करें</a>
+              <a class="btn" href="#courses">कक्षाएँ देखें</a>
+            </div>
+          </div>
+          <div class="hero-img" aria-hidden="true">
+            <img src="/placeholder.svg?height=520&width=760" alt="तकनीशियन लैपटॉप की मरम्मत करते हुए" />
+          </div>
+        </div>
+      </section>
+
+      <section id="services-hi">
+        <div class="container">
+          <h2 class="section-title">मरम्मत सेवाएँ</h2>
+          <div class="grid grid-3">
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="लैपटॉप हार्डवेयर मरम्मत" />
+              <h3>हार्डवेयर मरम्मत</h3>
+              <p>स्क्रीन, कीबोर्ड, बैटरी, RAM/SSD अपग्रेड और डायग्नॉस्टिक।</p>
+              <span class="price-badge">₹799 से</span>
+            </article>
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="वायरस हटाना और ट्यून-अप" />
+              <h3>वायरस हटाना</h3>
+              <p>मैलवेयर साफ़ करें, प्रदर्शन बढ़ाएँ और जरूरी सुरक्षा सेट करें।</p>
+              <span class="price-badge">₹499 से</span>
+            </article>
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="डेटा रिकवरी सेवा" />
+              <h3>डेटा रिकवरी</h3>
+              <p>खराब ड्राइव से फाइलें वापस पाएं और भरोसेमंद बैकअप सेट करें।</p>
+              <span class="price-badge">₹999 से</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="courses-hi">
+        <div class="container">
+          <span class="kicker">अपनी गति से सीखें</span>
+          <h2 class="section-title">कंप्यूटिंग की बुनियाद</h2>
+          <div class="grid grid-3">
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="शुरुआत करने वालों के लिए कंप्यूटर बेसिक्स क्लास" />
+              <h3>Computing 101</h3>
+              <p>शून्य से शुरू करें: कंप्यूटर उपयोग, फाइलें और सेटिंग्स की समझ।</p>
+              <span class="pill">4 सप्ताह • सप्ताहांत</span>
+            </article>
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="ऑफिस प्रोडक्टिविटी प्रशिक्षण" />
+              <h3>Office Productivity</h3>
+              <p>डॉक्स, स्प्रेडशीट और प्रेजेंटेशन के साथ समय-बचत तरकीबें।</p>
+              <span class="pill">6 सप्ताह • शाम</span>
+            </article>
+            <article class="card">
+              <img src="/placeholder.svg?height=220&width=380" alt="इंटरनेट सुरक्षा कक्षा" />
+              <h3>Internet Safety</h3>
+              <p>ऑनलाइन सुरक्षित रहें: पासवर्ड, स्कैम, प्राइवेसी और बैकअप।</p>
+              <span class="pill">3 सप्ताह • दोपहर</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container grid grid-2">
+          <div class="card">
+            <h3>हमारे समुदाय की राय</h3>
+            <div class="testimonial">
+              <div class="avatar"><img src="/placeholder.svg?height=80&width=80" alt="ग्राहक का चित्र" /></div>
+              <p>“सेवा तेज़ और सलाह स्पष्ट। मेरा लैपटॉप नए जैसा!”</p>
+            </div>
+            <div class="testimonial">
+              <div class="avatar"><img src="/placeholder.svg?height=80&width=80" alt="छात्र का चित्र" /></div>
+              <p>“कक्षाएँ शुरुआती के लिए सरल और व्यावहारिक हैं। अनुशंसित।”</p>
+            </div>
+          </div>
+          <div class="card stack-2">
+            <h3>आइए या कॉल करें</h3>
+            <p><strong>समय:</strong> सोम–शनि, 10:00–19:00</p>
+            <p><strong>पता:</strong> 12 मार्केट रोड, मेट्रो गेट के पास, आपका शहर</p>
+            <div class="cta-group">
+              <a class="btn btn-primary" href="tel:+919999999999">कॉल: +91 99999 99999</a>
+              <a class="btn btn-accent" href="https://wa.me/919999999999?text=Hello%20I%27d%20like%20to%20book%20a%20repair%20or%20class">WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 
